@@ -16,7 +16,9 @@ startE = 1.0; endE = 0.01; anneling_steps = int(1e2); e_step = (startE-endE)/ann
 num_episodes = int(1e4); pre_train_steps = int(1e4)
 loadmodel = False
 
-tf.reset_default_graph()
+
+tf.compat.v1.reset_default_graph()
+
 mH = 128; gamma = 1.0; alpha = 1.0
 mainQN = CNNPolicy(); mainQN.create_network(mH)
 init = tf.global_variables_initializer()
@@ -107,7 +109,7 @@ for i_episode in range(num_episodes+1):
 
     if i_episode%5000 == 0:
         print(rnd>e)
-        filepath = './result/training results/step' + str(i_episode)
+        filepath = 'bridge deck/result/training results/step' + str(i_episode)
         if not os.path.exists(filepath):
             os.mkdir(filepath)
         saver.save(sess, filepath+'/training-'+str(i_episode)+'.cpkt')
