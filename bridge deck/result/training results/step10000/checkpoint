@@ -1,0 +1,4 @@
+model_checkpoint_path: "training-10000.cpkt"
+all_model_checkpoint_paths: "..\\step0\\training-0.cpkt"
+all_model_checkpoint_paths: "..\\step5000\\training-5000.cpkt"
+all_model_checkpoint_paths: "training-10000.cpkt"

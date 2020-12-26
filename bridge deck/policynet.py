@@ -5,7 +5,7 @@ import tf_slim as slim
 
 class CNNPolicy(object):
     def create_network(self,mH=128):
-        self.scalarInput = tf.compat.v1.placeholder(shape=[None,49], dtype=tf.float32)
+        self.scalarInput = tf.placeholder(shape=[None,49], dtype=tf.float32)
         self.imageIn = tf.reshape(self.scalarInput, shape=[-1,7,7,1])
         self.conv1 = slim.conv2d(inputs=self.imageIn, num_outputs=4, kernel_size=[3,3], stride=[1,1],
                                  activation_fn=tf.nn.tanh, padding='SAME', biases_initializer=None)

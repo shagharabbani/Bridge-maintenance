@@ -17,7 +17,8 @@ num_episodes = int(1e4); pre_train_steps = int(1e4)
 loadmodel = False
 
 
-tf.compat.v1.reset_default_graph()
+tf.reset_default_graph()
+tf.disable_eager_execution()
 
 mH = 128; gamma = 1.0; alpha = 1.0
 mainQN = CNNPolicy(); mainQN.create_network(mH)
@@ -111,7 +112,7 @@ for i_episode in range(num_episodes+1):
         print(rnd>e)
         filepath = 'bridge deck/result/training results/step' + str(i_episode)
         if not os.path.exists(filepath):
-            os.mkdir(filepath)
+            os.makedirs(filepath)
         saver.save(sess, filepath+'/training-'+str(i_episode)+'.cpkt')
         np.save(filepath+'/costs.npy', costs)
         np.save(filepath+'/DQNloss.npy', DQNloss)
