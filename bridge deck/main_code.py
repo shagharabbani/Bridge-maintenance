@@ -39,6 +39,7 @@ if loadmodel:
     ckpt = tf.train.get_checkpoint_state(networkmodel)
     saver.restore(sess, ckpt.model_checkpoint_path)
 
+# MC simulation
 for i_episode in range(num_episodes+1):
     episodeBuffer = experience_buffer(pre_train_steps)
 
