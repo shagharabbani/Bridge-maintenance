@@ -58,19 +58,27 @@ for i_episode in range(num_episodes+1):
     while not done:
         states[t] = copy.deepcopy(s)
 
+        # Preallocating the action vector (1x7).
         a = np.zeros(7,dtype=np.int32)
         if rnd < e:
+            # Generating a random action for each 7 component (1x7 vector, each entry is 0, 1, 2, or 3).
             a = np.random.randint(0,4,7)
         else:
             a = sess.run(mainQN.predict, feed_dict={mainQN.scalarInput:[s]})[0]
 
-        state1, reward, done = env.step(a)
+        # Getting the new state and the corresponding reward of action 'a' and determining if a terminal node is reached.
+        state1, reward, done = env.step(a,render=True)
+        # Normalizing the reward vector (1x7)
         r = reward/600
+        # Converting the state matrix (7x7) to a row vector (1x49)
         s1 = np.reshape(state1,[49])
+        # Converting the binary action matrix (7x4) to a row vector (1x28)
         code_a = np.reshape(processsa(a,4),[28])
 
+        # Storing the data at each time in a variable
         states1[t] = copy.deepcopy(s1); rewards[t] = copy.deepcopy(r); actions[t] = copy.deepcopy(a)
         codeactions[t] = copy.deepcopy(code_a); dones[t] = copy.deepcopy(done)
+        # Updating the state and time for next year after applying the actions
         s = s1; t+=1
     G = getreturn(rewards,gamma=gamma)
     costs.append(np.sum(rewards))
