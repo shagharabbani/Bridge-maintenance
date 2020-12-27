@@ -80,27 +80,47 @@ for i_episode in range(num_episodes+1):
         codeactions[t] = copy.deepcopy(code_a); dones[t] = copy.deepcopy(done)
         # Updating the state and time for next year after applying the actions
         s = s1; t+=1
+    # Getting the return G (a parameter that balances the short- and long-term rewards). Refer to Eq. 1 in the paper.
     G = getreturn(rewards,gamma=gamma)
+    # Storing the reward vectors of each year in a single numpy array.
     costs.append(np.sum(rewards))
     if i_episode%100==0:
         print(str(i_episode), '***********************', costs[-1],  DQNloss[-1], '***********************', time.time() - start)
 
     for i in range(100):
+        # Getting the state, action (decimal and binary), value function (G), terminal node condition, and reward at time i. AND...
+        # Getting the state at the next time step
         s = states[i]; a = actions[i]; Q = G[i]; s1 = states1[i]; d = dones[i]; code_a = codeactions[i]; r = rewards[i]
+        # Converting back the state from a row vector (1x49) to a square matirx (7x7)
         state = np.int32(np.reshape(s,[7,7]))
+        # state_num is a (1x7) vector which contains the condition of each component at time i.
         _, state_num = np.where(state[:,0:6]==1)
+        # Converting action vector 'a' to int32 data type.
         a = np.int32(a)
+        
         for component in range(7):
+            # Creating a tuple for tracking the number of times a state (i.e. node) is visited.
             tuple_idx = (component, state_num[component], a[component], i)
+            # Have we seen this situation before?
+            # If yes:
             if Q_dict.get(tuple_idx):
+                # Getting n_times and Q_value from the previous time that this exact combination is visited.
                 n_times,Q_value = Q_dict[tuple_idx]
+                # Incrementing n_times
                 n_times += 1
+                # Updating the Q_value based on the difference between the new and old values
                 Q_value += (Q[component]-Q_value)*alpha
+                # Storing n_times and Q_value for each tuple in a dictionary 'Q_dict'
                 Q_dict[tuple_idx] = (n_times, Q_value)
+            # If no:
             else:
+                # This is the first time we face this situation. So the number of times should be zero.
                 n_times = 0
+                # The reward corresponding to 'component' at state 'state_num[component]' with action 'a[component]' at time i
                 Q_value = Q[component]
+                # Storing n_times and Q_value for each tuple in a dictionary 'Q_dict'
                 Q_dict[tuple_idx] = (n_times, Q_value)
+            # Updating the new Q_value (if it has not been visited, nothing will be updated.)
             Q[component] = Q_value
         episodeBuffer.add(np.reshape(np.array([s,a,Q,r,s1,d,code_a]),[1,7]))
     myBuffer.add(episodeBuffer.buffer)
