@@ -5,8 +5,10 @@ import tf_slim as slim
 
 class CNNPolicy(object):
     def create_network(self,mH=128):
+        # Placeholder : Inserts a placeholder for a tensor that will be always fed.
         self.scalarInput = tf.placeholder(shape=[None,49], dtype=tf.float32)
         self.imageIn = tf.reshape(self.scalarInput, shape=[-1,7,7,1])
+        #Same: input and output dimension would be the same but for valid the output dimension will be less.
         self.conv1 = slim.conv2d(inputs=self.imageIn, num_outputs=4, kernel_size=[3,3], stride=[1,1],
                                  activation_fn=tf.nn.tanh, padding='SAME', biases_initializer=None)
         self.conv2 = slim.conv2d(inputs=self.conv1, num_outputs=16, kernel_size= [3,3], stride=[2,2],
@@ -17,7 +19,9 @@ class CNNPolicy(object):
                                  activation_fn=tf.nn.tanh,padding='VALID', biases_initializer=None)
 
         # duel DQN, outputs concludes advantage and value streams
+        #converts a tensor 2-Dim to a vector
         self.layer4 = slim.flatten(self.conv4)
+        # Xavier initializes a weight arbitrarily.
         xavier_init = tf.contrib.layers.xavier_initializer()
         self.W1 = tf.Variable(xavier_init([mH,mH]))
         self.b1 = tf.Variable(tf.zeros([mH]))
@@ -34,7 +38,9 @@ class CNNPolicy(object):
         self.Vb = tf.Variable(tf.zeros([7]))
         self.Advantage = tf.matmul(self.streamA, self.AW)+self.Ab
         self.Value = tf.matmul(self.streamV, self.VW)+self.Vb
+        # Q(s,a)
         self.Advantage = tf.reshape(self.Advantage, [-1, 7, 4])
+        # Action (non-binary)
         self.Value = tf.reshape(self.Value, [-1,7,1])
 
         # combine advantage and value network together

@@ -20,6 +20,7 @@ loadmodel = False
 tf.reset_default_graph()
 tf.disable_eager_execution()
 
+#mH =Fully connected, gamma= discount factor, alpha= learning rate
 mH = 128; gamma = 1.0; alpha = 1.0
 mainQN = CNNPolicy(); mainQN.create_network(mH)
 init = tf.global_variables_initializer()
@@ -67,7 +68,7 @@ for i_episode in range(num_episodes+1):
             a = sess.run(mainQN.predict, feed_dict={mainQN.scalarInput:[s]})[0]
 
         # Getting the new state and the corresponding reward of action 'a' and determining if a terminal node is reached.
-        state1, reward, done = env.step(a,render=True)
+        state1, reward, done = env.step(a)
         # Normalizing the reward vector (1x7)
         r = reward/600
         # Converting the state matrix (7x7) to a row vector (1x49)
@@ -108,8 +109,10 @@ for i_episode in range(num_episodes+1):
                 n_times,Q_value = Q_dict[tuple_idx]
                 # Incrementing n_times
                 n_times += 1
-                # Updating the Q_value based on the difference between the new and old values
+                #############################################################################
+                # Updating the Q_value based on the difference between the new and old values beased on Eq. 2 in the paper.
                 Q_value += (Q[component]-Q_value)*alpha
+                #############################################################################
                 # Storing n_times and Q_value for each tuple in a dictionary 'Q_dict'
                 Q_dict[tuple_idx] = (n_times, Q_value)
             # If no:
