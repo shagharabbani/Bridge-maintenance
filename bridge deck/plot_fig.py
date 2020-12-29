@@ -6,8 +6,8 @@ mpl.rc('font',family='Times New Roman')
 import matplotlib.pyplot as plt
 font = {"fontname": 'Times New Roman', "fontsize": 16}
 font1 = {"fontname": 'Times New Roman', "fontsize": 12}
-costs = np.load('./result/training results/step90000/costs.npy')
-loss = np.load('./result/training results/step90000/DQNloss.npy')
+costs = np.load('./bridge deck/result/training results/step10000/costs.npy')
+loss = np.load('./bridge deck/result/training results/step10000/DQNloss.npy')
 A = np.reshape(costs[1:], [900,100])
 B = np.reshape(loss, [899,100])
 fig, ax1 = plt.subplots()

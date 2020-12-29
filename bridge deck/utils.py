@@ -21,7 +21,7 @@ def plot_state(state, X, Y):
         plt.xticks(fontname='times new roman')
         plt.yticks(fontname='times new roman')
 
-
+# Converts decimal age to binary age (for example 49 to 0110001)
 def time_encoder(time):
     coder = np.zeros(7,dtype=np.int32)
     for i in range(7):

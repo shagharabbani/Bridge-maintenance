@@ -21,6 +21,7 @@ class BridgeEnv:
         raw_s[:,0] = 1 # raw state, one-hot setting; all components are in condition 1
         raw_s[:,6] = time_encoder(self.time)
         self.state = raw_s
+        # states with non-binary situation
         self.state_num = np.zeros(7,dtype=np.int32)
         return self.state
 
